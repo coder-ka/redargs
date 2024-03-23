@@ -1,29 +1,37 @@
 export function reduceArgs<T>(
   args: string[],
-  fn: (parsed: T, flag: { name: string; value: string }) => T,
+  fn: (parsed: T, flag: { name: string; values: string[] }) => T,
   defaultValue: T
 ): T {
-  const tokens = args.flatMap((x) => x.split("="));
+  const tokens = ["-"].concat(args.flatMap((x) => x.split("=")));
 
-  const { parsed } = tokens.reduce(
-    ({ parsed, flag }, token) => {
-      if (token.startsWith("--") || token.startsWith("-")) {
-        return {
-          parsed,
-          flag: token,
-        };
-      } else {
-        return {
-          flag,
-          parsed: fn(parsed, { name: flag, value: token }),
-        };
+  let parsed = defaultValue;
+
+  for (let i = 0, imax = tokens.length; i < imax; i++) {
+    const token = tokens[i];
+
+    if (isFlag(token)) {
+      const name = token;
+
+      const values = [] as string[];
+
+      while (true) {
+        i++;
+        const token = tokens[i];
+        if (isFlag(token)) {
+          break;
+        } else {
+          values.push(token);
+        }
       }
-    },
-    {
-      parsed: defaultValue,
-      flag: "-",
+
+      parsed = fn(parsed, { name, values });
     }
-  );
+  }
 
   return parsed;
+}
+
+function isFlag(token: string) {
+  return token.startsWith("--") || token.startsWith("-");
 }

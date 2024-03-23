@@ -15,7 +15,7 @@ npm install redargs
 ```typescript
 import { reduceArgs } from 'redargs';
 
-// cli build --dist=dist
+// cli build --dist=dist -b
 
 const parsed = reduceArgs<{
   operation?: string;
@@ -27,13 +27,13 @@ const parsed = reduceArgs<{
       case "-":
         return {
           ...parsed,
-          operation: flag.value,
+          operation: flag.values[0],
         };
       case "-d": // This is a way to define alias -d for --dist.
       case "--dist":
         return {
           ...parsed,
-          dist: flag.value,
+          dist: flag.values[0],
         };
       default:
         return parsed;
