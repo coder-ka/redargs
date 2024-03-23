@@ -19,7 +19,7 @@ import { reduceArgs } from 'redargs';
 
 const parsed = reduceArgs<{
   operation?: string;
-  dist?: string;
+  dist: string;
 }>(
   process.argv.slice(2),
   (parsed, flag) => {
@@ -39,7 +39,9 @@ const parsed = reduceArgs<{
         return parsed;
     }
   },
-  {}
+  {
+    dist: 'dist'
+  }
 );
 
 console.log(parsed);
