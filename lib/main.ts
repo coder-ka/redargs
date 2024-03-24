@@ -17,6 +17,7 @@ export function reduceArgs<T>(
 
       while (true) {
         i++;
+        if (i === tokens.length) break;
         const token = tokens[i];
         if (isFlag(token)) {
           break;
